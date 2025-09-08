@@ -1,17 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function App() {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState(null);
+  const [sessionId, setSessionId] = useState("");
+
+  // Crear o recuperar sessionId al cargar la app
+  useEffect(() => {
+    let id = localStorage.getItem("sessionId");
+    if (!id) {
+      id = crypto.randomUUID(); // Genera un UUID único
+      localStorage.setItem("sessionId", id);
+    }
+    setSessionId(id);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://n8n-production-e992.up.railway.app/webhook/cbb3bdda-d405-4eb0-a8db-be74e12393bd", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: input }),
-      });
+      const res = await fetch(
+        "https://n8n-production-e992.up.railway.app/webhook/cbb3bdda-d405-4eb0-a8db-be74e12393bd",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: input, sessionId }),
+        }
+      );
 
       const data = await res.json();
       setResponse(data);
@@ -22,7 +36,13 @@ function App() {
   };
 
   return (
-    <div style={{ fontFamily: "sans-serif", textAlign: "center", marginTop: "50px" }}>
+    <div
+      style={{
+        fontFamily: "sans-serif",
+        textAlign: "center",
+        marginTop: "50px",
+      }}
+    >
       <h1>Enviar datos al Webhook</h1>
       <form onSubmit={handleSubmit}>
         <input
@@ -32,13 +52,22 @@ function App() {
           onChange={(e) => setInput(e.target.value)}
           style={{ padding: "10px", width: "250px" }}
         />
-        <button type="submit" style={{ padding: "10px 20px", marginLeft: "10px" }}>
+        <button
+          type="submit"
+          style={{ padding: "10px 20px", marginLeft: "10px" }}
+        >
           Enviar
         </button>
       </form>
 
       {response && (
-        <div style={{ marginTop: "20px", textAlign: "left", display: "inline-block" }}>
+        <div
+          style={{
+            marginTop: "20px",
+            textAlign: "left",
+            display: "inline-block",
+          }}
+        >
           <h3>Respuesta del webhook:</h3>
           <pre>{JSON.stringify(response, null, 2)}</pre>
         </div>
