@@ -94,8 +94,17 @@ function App() {
         }
       );
 
-      const data = await res.json();
-      setResponse(data);
+      const rawData = await res.json();
+      
+      // 🔄 Normalizar respuesta como en ChatPage
+      let processedData = rawData.response ?? rawData;
+      
+      // Si viene como array con .output (OpenAI tools) → tomar .output
+      if (Array.isArray(processedData) && processedData[0]?.output) {
+        processedData = processedData[0].output;
+      }
+      
+      setResponse(processedData);
     } catch (err) {
       console.error(err);
       setResponse({ error: "Error al conectar con el agente financiero" });
