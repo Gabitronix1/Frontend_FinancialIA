@@ -111,153 +111,400 @@ function App() {
     }
   };
 
-  return (
-    <div style={{ 
-      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  const styles = {
+    // Design Tokens
+    colors: {
+      primary: '#0E3A53',
+      accent: '#1B5E20',
+      danger: '#C62828',
+      bg: '#F5F7FA',
+      text: '#2A2E33',
+      border: '#D9DEE5',
+      white: '#FFFFFF',
+      gray50: '#F8FAFC',
+      gray100: '#F1F5F9',
+      gray200: '#E2E8F0',
+      gray300: '#CBD5E1',
+      gray600: '#475569',
+      gray700: '#334155',
+      gray800: '#1E293B'
+    },
+    
+    // Base Styles
+    app: {
+      fontFamily: "'Inter', 'Manrope', system-ui, -apple-system, sans-serif",
+      backgroundColor: '#F5F7FA',
       minHeight: "100vh",
       padding: "20px"
-    }}>
+    },
+    
+    // Header
+    header: {
+      textAlign: "center",
+      marginBottom: "32px"
+    },
+    
+    title: {
+      color: '#0E3A53',
+      fontSize: "2.25rem",
+      fontWeight: "700",
+      margin: "0",
+      letterSpacing: "-0.025em"
+    },
+    
+    subtitle: {
+      color: '#475569',
+      fontSize: "1rem",
+      margin: "8px 0 0 0",
+      fontWeight: "400"
+    },
+    
+    // Navigation
+    tabContainer: {
+      display: "flex",
+      justifyContent: "center",
+      marginBottom: "24px",
+      gap: "8px"
+    },
+    
+    tab: (isActive) => ({
+      padding: "12px 20px",
+      border: "2px solid",
+      borderColor: isActive ? '#0E3A53' : '#D9DEE5',
+      borderRadius: "12px",
+      backgroundColor: isActive ? '#0E3A53' : '#FFFFFF',
+      color: isActive ? '#FFFFFF' : '#475569',
+      fontWeight: isActive ? "600" : "500",
+      fontSize: "14px",
+      cursor: "pointer",
+      transition: "all 0.2s ease-in-out",
+      outline: "none",
+      ':hover': {
+        borderColor: '#0E3A53',
+        transform: "translateY(-1px)"
+      },
+      ':focus-visible': {
+        boxShadow: "0 0 0 3px rgba(14, 58, 83, 0.2)"
+      }
+    }),
+    
+    // Main Container
+    mainContainer: {
+      maxWidth: "896px",
+      margin: "0 auto",
+      backgroundColor: '#FFFFFF',
+      borderRadius: "16px",
+      boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+      overflow: "hidden",
+      border: "1px solid #E2E8F0"
+    },
+    
+    // Content sections
+    contentSection: {
+      padding: "32px"
+    },
+    
+    sectionTitle: {
+      color: '#2A2E33',
+      fontSize: "1.5rem",
+      fontWeight: "600",
+      marginBottom: "24px",
+      display: "flex",
+      alignItems: "center",
+      gap: "8px"
+    },
+    
+    // Form elements
+    input: {
+      width: "100%",
+      padding: "16px",
+      border: "2px solid #D9DEE5",
+      borderRadius: "8px",
+      fontSize: "16px",
+      outline: "none",
+      transition: "border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+      boxSizing: "border-box",
+      fontFamily: "inherit",
+      backgroundColor: '#FFFFFF',
+      color: '#2A2E33'
+    },
+    
+    inputFocused: {
+      borderColor: '#0E3A53',
+      boxShadow: "0 0 0 3px rgba(14, 58, 83, 0.1)"
+    },
+    
+    button: (variant = 'primary', disabled = false) => ({
+      width: "100%",
+      padding: "16px 24px",
+      backgroundColor: disabled 
+        ? '#CBD5E1' 
+        : variant === 'primary' 
+          ? '#0E3A53' 
+          : variant === 'success' 
+            ? '#1B5E20' 
+            : '#FFFFFF',
+      color: disabled 
+        ? '#64748B' 
+        : variant === 'primary' || variant === 'success' 
+          ? '#FFFFFF' 
+          : '#2A2E33',
+      border: variant === 'outline' ? "2px solid #D9DEE5" : "none",
+      borderRadius: "8px",
+      fontSize: "16px",
+      fontWeight: "600",
+      cursor: disabled ? "not-allowed" : "pointer",
+      transition: "all 0.2s ease-in-out",
+      outline: "none",
+      fontFamily: "inherit"
+    }),
+    
+    // File upload area
+    uploadArea: (hasFile) => ({
+      border: "2px dashed",
+      borderColor: hasFile ? '#1B5E20' : '#0E3A53',
+      borderRadius: "12px",
+      padding: "48px 24px",
+      textAlign: "center",
+      marginBottom: "24px",
+      backgroundColor: hasFile ? 'rgba(27, 94, 32, 0.02)' : 'rgba(14, 58, 83, 0.02)',
+      cursor: "pointer",
+      transition: "all 0.2s ease-in-out"
+    }),
+    
+    uploadIcon: {
+      fontSize: "48px",
+      marginBottom: "16px",
+      display: "block"
+    },
+    
+    uploadText: {
+      color: '#2A2E33',
+      fontSize: "18px",
+      fontWeight: "600",
+      margin: "0 0 8px 0"
+    },
+    
+    uploadSubtext: {
+      color: '#475569',
+      fontSize: "14px",
+      margin: "0"
+    },
+    
+    // Quick actions grid
+    actionsGrid: {
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+      gap: "16px"
+    },
+    
+    actionCard: {
+      padding: "24px",
+      border: "2px solid #E2E8F0",
+      borderRadius: "12px",
+      backgroundColor: '#FFFFFF',
+      cursor: "pointer",
+      transition: "all 0.2s ease-in-out",
+      textAlign: "center",
+      outline: "none"
+    },
+    
+    actionCardHover: {
+      borderColor: '#0E3A53',
+      transform: "translateY(-2px)",
+      boxShadow: "0 10px 15px -3px rgba(14, 58, 83, 0.1), 0 4px 6px -2px rgba(14, 58, 83, 0.05)"
+    },
+    
+    actionIcon: {
+      fontSize: "32px",
+      marginBottom: "12px",
+      display: "block"
+    },
+    
+    actionTitle: {
+      color: '#2A2E33',
+      fontSize: "16px",
+      fontWeight: "600",
+      margin: "0 0 8px 0"
+    },
+    
+    actionDescription: {
+      color: '#64748B',
+      fontSize: "14px",
+      margin: "0",
+      lineHeight: "1.4"
+    },
+    
+    // Response section
+    responseSection: {
+      backgroundColor: '#F8FAFC',
+      padding: "32px",
+      borderTop: "1px solid #E2E8F0"
+    },
+    
+    responseTitle: {
+      color: '#2A2E33',
+      fontSize: "18px",
+      fontWeight: "600",
+      marginBottom: "16px",
+      display: "flex",
+      alignItems: "center",
+      gap: "8px"
+    },
+    
+    responseContent: {
+      backgroundColor: '#FFFFFF',
+      padding: "24px",
+      borderRadius: "8px",
+      border: "1px solid #E2E8F0",
+      fontSize: "14px",
+      lineHeight: "1.6"
+    },
+    
+    responseText: {
+      whiteSpace: "pre-wrap",
+      wordBreak: "break-word",
+      margin: "0",
+      fontFamily: "'JetBrains Mono', 'Menlo', 'Monaco', monospace",
+      color: '#2A2E33'
+    },
+    
+    errorText: {
+      color: '#C62828',
+      fontWeight: "500"
+    },
+    
+    // Footer
+    footer: {
+      textAlign: "center",
+      marginTop: "32px",
+      color: '#64748B',
+      fontSize: "14px"
+    },
+    
+    footerText: {
+      margin: "0",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "8px"
+    }
+  };
+
+  return (
+    <div style={styles.app}>
       {/* Header */}
-      <div style={{
-        textAlign: "center",
-        marginBottom: "30px"
-      }}>
-        <h1 style={{
-          color: "white",
-          fontSize: "2.5rem",
-          fontWeight: "300",
-          margin: "0",
-          textShadow: "0 2px 4px rgba(0,0,0,0.3)"
-        }}>
-          🏦 Mi Agente Financiero
+      <header style={styles.header}>
+        <h1 style={styles.title}>
+          Mi Agente Financiero
         </h1>
-        <p style={{
-          color: "rgba(255,255,255,0.9)",
-          fontSize: "1.1rem",
-          margin: "10px 0 0 0"
-        }}>
+        <p style={styles.subtitle}>
           Tu asistente personal para el control de gastos y presupuestos
         </p>
-      </div>
+      </header>
 
       {/* Navegación por pestañas */}
-      <div style={{
-        display: "flex",
-        justifyContent: "center",
-        marginBottom: "20px"
-      }}>
+      <nav style={styles.tabContainer}>
         {[
-          { key: "chat", label: "💬 Chat", icon: "💬" },
-          { key: "upload", label: "📄 Subir Factura", icon: "📄" },
-          { key: "actions", label: "⚡ Acciones Rápidas", icon: "⚡" }
+          { key: "chat", label: "Consultas", icon: "💬" },
+          { key: "upload", label: "Subir Factura", icon: "📄" },
+          { key: "actions", label: "Acciones Rápidas", icon: "⚡" }
         ].map(tab => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            style={{
-              padding: "12px 24px",
-              margin: "0 5px",
-              border: "none",
-              borderRadius: "25px",
-              background: activeTab === tab.key ? "white" : "rgba(255,255,255,0.2)",
-              color: activeTab === tab.key ? "#667eea" : "white",
-              fontWeight: activeTab === tab.key ? "600" : "400",
-              cursor: "pointer",
-              transition: "all 0.3s ease",
-              fontSize: "14px"
+            style={styles.tab(activeTab === tab.key)}
+            onMouseEnter={(e) => {
+              if (activeTab !== tab.key) {
+                e.target.style.borderColor = '#0E3A53';
+                e.target.style.transform = "translateY(-1px)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== tab.key) {
+                e.target.style.borderColor = '#D9DEE5';
+                e.target.style.transform = "translateY(0)";
+              }
             }}
           >
+            <span style={{ marginRight: "6px" }}>{tab.icon}</span>
             {tab.label}
           </button>
         ))}
-      </div>
+      </nav>
 
       {/* Contenedor principal */}
-      <div style={{
-        maxWidth: "800px",
-        margin: "0 auto",
-        background: "white",
-        borderRadius: "20px",
-        boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
-        overflow: "hidden"
-      }}>
+      <main style={styles.mainContainer}>
         
         {/* Tab: Chat */}
         {activeTab === "chat" && (
-          <div style={{ padding: "30px" }}>
-            <h2 style={{ 
-              color: "#333",
-              marginBottom: "20px",
-              fontSize: "1.5rem"
-            }}>
-              💬 Conversa con tu agente
+          <section style={styles.contentSection}>
+            <h2 style={styles.sectionTitle}>
+              <span>💬</span>
+              Consultas al Agente
             </h2>
             
             <form onSubmit={handleSubmit}>
-              <div style={{ marginBottom: "15px" }}>
+              <div style={{ marginBottom: "16px" }}>
                 <input
                   type="text"
                   value={input}
-                  placeholder="Pregúntame sobre tus finanzas, sube facturas o pide reportes..."
+                  placeholder="Pregúntame sobre tus finanzas, análisis de gastos o reportes..."
                   onChange={(e) => setInput(e.target.value)}
                   disabled={loading}
                   style={{
-                    width: "100%",
-                    padding: "15px",
-                    border: "2px solid #e1e8ed",
-                    borderRadius: "10px",
-                    fontSize: "16px",
-                    outline: "none",
-                    transition: "border-color 0.3s ease",
-                    boxSizing: "border-box"
+                    ...styles.input,
+                    ...(document.activeElement === document.querySelector('input[type="text"]') ? styles.inputFocused : {})
                   }}
-                  onFocus={(e) => e.target.style.borderColor = "#667eea"}
-                  onBlur={(e) => e.target.style.borderColor = "#e1e8ed"}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#0E3A53';
+                    e.target.style.boxShadow = "0 0 0 3px rgba(14, 58, 83, 0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#D9DEE5';
+                    e.target.style.boxShadow = "none";
+                  }}
                 />
               </div>
               
               <button
                 type="submit"
                 disabled={loading || (!input.trim() && !selectedFile)}
-                style={{
-                  width: "100%",
-                  padding: "15px",
-                  background: loading ? "#ccc" : "linear-gradient(45deg, #667eea, #764ba2)",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "10px",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  cursor: loading ? "not-allowed" : "pointer",
-                  transition: "all 0.3s ease"
+                style={styles.button('primary', loading || (!input.trim() && !selectedFile))}
+                onMouseEnter={(e) => {
+                  if (!loading && (input.trim() || selectedFile)) {
+                    e.target.style.backgroundColor = '#1A4D66';
+                    e.target.style.transform = "translateY(-1px)";
+                    e.target.style.boxShadow = "0 4px 6px -1px rgba(14, 58, 83, 0.2)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!loading && (input.trim() || selectedFile)) {
+                    e.target.style.backgroundColor = '#0E3A53';
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "none";
+                  }
                 }}
               >
-                {loading ? "🤔 Procesando..." : "💸 Enviar consulta"}
+                {loading ? (
+                  <span>🔄 Procesando consulta...</span>
+                ) : (
+                  <span>💼 Enviar consulta</span>
+                )}
               </button>
             </form>
-          </div>
+          </section>
         )}
 
         {/* Tab: Upload */}
         {activeTab === "upload" && (
-          <div style={{ padding: "30px" }}>
-            <h2 style={{ 
-              color: "#333",
-              marginBottom: "20px",
-              fontSize: "1.5rem"
-            }}>
-              📄 Subir Factura o Boleta
+          <section style={styles.contentSection}>
+            <h2 style={styles.sectionTitle}>
+              <span>📄</span>
+              Procesar Documento
             </h2>
             
-            <div style={{
-              border: "2px dashed #667eea",
-              borderRadius: "15px",
-              padding: "40px",
-              textAlign: "center",
-              marginBottom: "20px",
-              background: selectedFile ? "rgba(102, 126, 234, 0.05)" : "rgba(0,0,0,0.02)"
-            }}>
+            <div style={styles.uploadArea(selectedFile)}>
               <input
                 type="file"
                 onChange={handleFileSelect}
@@ -266,27 +513,20 @@ function App() {
                 id="file-upload"
               />
               
-              <label htmlFor="file-upload" style={{
-                cursor: "pointer",
-                display: "block"
-              }}>
-                <div style={{
-                  fontSize: "48px",
-                  marginBottom: "15px"
-                }}>
+              <label htmlFor="file-upload" style={{ cursor: "pointer", display: "block" }}>
+                <span style={styles.uploadIcon}>
                   {selectedFile ? "✅" : "📎"}
-                </div>
+                </span>
                 
-                <h3 style={{ color: "#333", margin: "0 0 10px 0" }}>
-                  {selectedFile ? selectedFile.name : "Seleccionar archivo"}
+                <h3 style={styles.uploadText}>
+                  {selectedFile ? selectedFile.name : "Seleccionar documento"}
                 </h3>
                 
-                <p style={{ 
-                  color: "#666",
-                  margin: "0",
-                  fontSize: "14px"
-                }}>
-                  {selectedFile ? "Archivo listo para procesar" : "Soporta: PNG, JPG, PDF, DOC, DOCX"}
+                <p style={styles.uploadSubtext}>
+                  {selectedFile 
+                    ? "Documento listo para procesar" 
+                    : "Formatos soportados: PNG, JPG, PDF, DOC, DOCX"
+                  }
                 </p>
               </label>
             </div>
@@ -295,186 +535,148 @@ function App() {
               <input
                 type="text"
                 value={input}
-                placeholder="Instrucciones adicionales (opcional)..."
+                placeholder="Instrucciones adicionales para el procesamiento (opcional)..."
                 onChange={(e) => setInput(e.target.value)}
                 disabled={loading}
                 style={{
-                  width: "100%",
-                  padding: "15px",
-                  border: "2px solid #e1e8ed",
-                  borderRadius: "10px",
-                  fontSize: "16px",
-                  outline: "none",
-                  marginBottom: "15px",
-                  boxSizing: "border-box"
+                  ...styles.input,
+                  marginBottom: "16px"
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#0E3A53';
+                  e.target.style.boxShadow = "0 0 0 3px rgba(14, 58, 83, 0.1)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#D9DEE5';
+                  e.target.style.boxShadow = "none";
                 }}
               />
               
               <button
                 type="submit"
                 disabled={loading || !selectedFile}
-                style={{
-                  width: "100%",
-                  padding: "15px",
-                  background: loading || !selectedFile ? "#ccc" : "linear-gradient(45deg, #667eea, #764ba2)",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "10px",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  cursor: loading || !selectedFile ? "not-allowed" : "pointer"
+                style={styles.button('success', loading || !selectedFile)}
+                onMouseEnter={(e) => {
+                  if (!loading && selectedFile) {
+                    e.target.style.backgroundColor = '#2E7D32';
+                    e.target.style.transform = "translateY(-1px)";
+                    e.target.style.boxShadow = "0 4px 6px -1px rgba(27, 94, 32, 0.2)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!loading && selectedFile) {
+                    e.target.style.backgroundColor = '#1B5E20';
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "none";
+                  }
                 }}
               >
-                {loading ? "📤 Procesando factura..." : "💾 Procesar y guardar gasto"}
+                {loading ? (
+                  <span>📤 Procesando documento...</span>
+                ) : (
+                  <span>💾 Procesar y registrar gasto</span>
+                )}
               </button>
             </form>
-          </div>
+          </section>
         )}
 
         {/* Tab: Acciones Rápidas */}
         {activeTab === "actions" && (
-          <div style={{ padding: "30px" }}>
-            <h2 style={{ 
-              color: "#333",
-              marginBottom: "25px",
-              fontSize: "1.5rem"
-            }}>
-              ⚡ Acciones Rápidas
+          <section style={styles.contentSection}>
+            <h2 style={styles.sectionTitle}>
+              <span>⚡</span>
+              Acciones Rápidas
             </h2>
             
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gap: "15px"
-            }}>
+            <div style={styles.actionsGrid}>
               {[
                 { 
                   action: "ver_presupuesto", 
                   label: "Ver Presupuesto", 
                   icon: "💰",
-                  description: "Consulta tu presupuesto actual"
+                  description: "Consulta el estado actual de tu presupuesto"
                 },
                 { 
                   action: "ver_gastos", 
                   label: "Lista de Gastos", 
                   icon: "📋",
-                  description: "Revisa todos tus gastos registrados"
+                  description: "Revisa el detalle de todos tus gastos registrados"
                 },
                 { 
                   action: "resumen", 
                   label: "Resumen Financiero", 
                   icon: "📊",
-                  description: "Obtén un análisis de tu situación"
+                  description: "Obtén un análisis completo de tu situación financiera"
                 }
               ].map(item => (
                 <button
                   key={item.action}
                   onClick={() => handleQuickAction(item.action)}
                   disabled={loading}
-                  style={{
-                    padding: "20px",
-                    border: "2px solid #e1e8ed",
-                    borderRadius: "15px",
-                    background: "white",
-                    cursor: loading ? "not-allowed" : "pointer",
-                    transition: "all 0.3s ease",
-                    textAlign: "center"
-                  }}
+                  style={styles.actionCard}
                   onMouseEnter={(e) => {
                     if (!loading) {
-                      e.target.style.borderColor = "#667eea";
+                      e.target.style.borderColor = '#0E3A53';
                       e.target.style.transform = "translateY(-2px)";
-                      e.target.style.boxShadow = "0 8px 20px rgba(102, 126, 234, 0.15)";
+                      e.target.style.boxShadow = "0 10px 15px -3px rgba(14, 58, 83, 0.1), 0 4px 6px -2px rgba(14, 58, 83, 0.05)";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!loading) {
-                      e.target.style.borderColor = "#e1e8ed";
+                      e.target.style.borderColor = '#E2E8F0';
                       e.target.style.transform = "translateY(0)";
                       e.target.style.boxShadow = "none";
                     }
                   }}
                 >
-                  <div style={{ fontSize: "32px", marginBottom: "10px" }}>
+                  <span style={styles.actionIcon}>
                     {item.icon}
-                  </div>
-                  <h3 style={{ 
-                    color: "#333", 
-                    margin: "0 0 8px 0",
-                    fontSize: "16px"
-                  }}>
+                  </span>
+                  <h3 style={styles.actionTitle}>
                     {item.label}
                   </h3>
-                  <p style={{ 
-                    color: "#666", 
-                    margin: "0",
-                    fontSize: "12px",
-                    lineHeight: "1.4"
-                  }}>
+                  <p style={styles.actionDescription}>
                     {item.description}
                   </p>
                 </button>
               ))}
             </div>
-          </div>
+          </section>
         )}
 
         {/* Respuesta del agente */}
         {response && (
-          <div style={{
-            background: "#f8f9fc",
-            padding: "30px",
-            borderTop: "1px solid #e1e8ed"
-          }}>
-            <h3 style={{ 
-              color: "#333", 
-              marginBottom: "15px",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px"
-            }}>
-              🤖 Respuesta del Agente Financiero
+          <section style={styles.responseSection}>
+            <h3 style={styles.responseTitle}>
+              <span>🤖</span>
+              Respuesta del Agente Financiero
             </h3>
             
-            <div style={{
-              background: "white",
-              padding: "20px",
-              borderRadius: "10px",
-              border: "1px solid #e1e8ed",
-              fontSize: "14px",
-              lineHeight: "1.6"
-            }}>
+            <div style={styles.responseContent}>
               {response.error ? (
-                <div style={{ color: "#e74c3c" }}>
-                  ❌ {response.error}
+                <div style={styles.errorText}>
+                  <strong>⚠️ Error:</strong> {response.error}
                 </div>
               ) : (
-                <pre style={{ 
-                  whiteSpace: "pre-wrap",
-                  wordBreak: "break-word",
-                  margin: "0",
-                  fontFamily: "inherit",
-                  color: "#333"
-                }}>
+                <pre style={styles.responseText}>
                   {JSON.stringify(response, null, 2)}
                 </pre>
               )}
             </div>
-          </div>
+          </section>
         )}
-      </div>
+      </main>
 
       {/* Footer */}
-      <div style={{
-        textAlign: "center",
-        marginTop: "30px",
-        color: "rgba(255,255,255,0.7)",
-        fontSize: "14px"
-      }}>
-        <p style={{ margin: "0" }}>
-          🔐 Tus datos están seguros • Session ID: {sessionId?.substring(0, 8)}...
+      <footer style={styles.footer}>
+        <p style={styles.footerText}>
+          <span>🔐</span>
+          <span>Conexión segura</span>
+          <span>•</span>
+          <span>Session ID: {sessionId?.substring(0, 8)}...</span>
         </p>
-      </div>
+      </footer>
     </div>
   );
 }
