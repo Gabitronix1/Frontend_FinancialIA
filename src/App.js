@@ -667,6 +667,15 @@ function App() {
                 <div style={styles.errorText}>
                   <strong>⚠️ Error:</strong> {response.error}
                 </div>
+              ) : typeof response === 'string' ? (
+                <div style={{ 
+                  ...styles.responseText, 
+                  fontFamily: "inherit",
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-word"
+                }}>
+                  {response}
+                </div>
               ) : (
                 <pre style={styles.responseText}>
                   {JSON.stringify(response, null, 2)}
